@@ -1,9 +1,14 @@
-use std::{ffi::OsStr, path::PathBuf, sync::OnceLock};
+#[cfg(not(target_os = "wasi"))]
+use std::{ffi::OsStr, sync::OnceLock};
+use std::path::PathBuf;
 
+#[cfg(not(target_os = "wasi"))]
 use directories::ProjectDirs;
 
+#[cfg(not(target_os = "wasi"))]
 static PROJECT_DIRS: OnceLock<ProjectDirs> = OnceLock::new();
 
+#[cfg(not(target_os = "wasi"))]
 pub fn project_dirs() -> &'static ProjectDirs {
     PROJECT_DIRS.get_or_init(|| {
         let legacy_dirs = directories::ProjectDirs::from("me", "william341", "muzak")
@@ -18,10 +23,18 @@ pub fn project_dirs() -> &'static ProjectDirs {
     })
 }
 
+#[cfg(not(target_os = "wasi"))]
 pub fn data_dir() -> PathBuf {
     project_dirs().data_dir().to_path_buf()
 }
 
+/// WaOS port: a program's own folder, which WaOS keeps for it across runs and updates.
+#[cfg(target_os = "wasi")]
+pub fn data_dir() -> PathBuf {
+    PathBuf::from("/data")
+}
+
+#[cfg(not(target_os = "wasi"))]
 pub fn log_dir() -> PathBuf {
     log_dir_in(
         project_dirs(),
@@ -29,6 +42,16 @@ pub fn log_dir() -> PathBuf {
     )
 }
 
+/// WaOS port: in the program's cache folder, unless `HUMMINGBIRD_LOG_DIR` says otherwise.
+#[cfg(target_os = "wasi")]
+pub fn log_dir() -> PathBuf {
+    std::env::var_os("HUMMINGBIRD_LOG_DIR")
+        .filter(|path| !path.is_empty())
+        .map(PathBuf::from)
+        .unwrap_or_else(|| PathBuf::from("/cache/logs"))
+}
+
+#[cfg(not(target_os = "wasi"))]
 fn log_dir_in(dirs: &ProjectDirs, override_dir: Option<&OsStr>) -> PathBuf {
     override_dir
         .filter(|path| !path.is_empty())
@@ -36,6 +59,7 @@ fn log_dir_in(dirs: &ProjectDirs, override_dir: Option<&OsStr>) -> PathBuf {
         .unwrap_or_else(|| default_log_dir(dirs))
 }
 
+#[cfg(not(target_os = "wasi"))]
 fn default_log_dir(dirs: &ProjectDirs) -> PathBuf {
     #[cfg(target_os = "linux")]
     {

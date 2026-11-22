@@ -321,13 +321,6 @@ impl Styled for EqGraph {
     }
 }
 
-impl IntoElement for EqGraph {
-    type Element = Self;
-
-    fn into_element(self) -> Self::Element {
-        self
-    }
-}
 
 pub struct EqGraphPrepaint {
     hitbox: Hitbox,

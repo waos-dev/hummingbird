@@ -295,13 +295,6 @@ impl Styled for ManagedImage {
     }
 }
 
-impl IntoElement for ManagedImage {
-    type Element = Self;
-
-    fn into_element(self) -> Self::Element {
-        self
-    }
-}
 
 impl Element for ManagedImage {
     type RequestLayoutState = ImageReady;

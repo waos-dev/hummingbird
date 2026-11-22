@@ -1,8 +1,12 @@
 use tracing::{error, info, warn};
 
+#[cfg(not(target_os = "wasi"))]
+use crate::devices::builtin::cpal::CpalProvider;
+#[cfg(target_os = "wasi")]
+use crate::devices::builtin::waos::WaosProvider;
 use crate::{
     devices::{
-        builtin::{cpal::CpalProvider, dummy::DummyDeviceProvider},
+        builtin::dummy::DummyDeviceProvider,
         errors::{FindError, OpenError, ResetError, StateError, SubmissionError},
         format::{ChannelSpec, FormatInfo},
         traits::{Device, DeviceProvider, OutputStream},
@@ -10,8 +14,11 @@ use crate::{
     media::pipeline::ChannelConsumers,
 };
 
-#[cfg(not(feature = "heap-profileable"))]
+#[cfg(all(not(feature = "heap-profileable"), not(target_os = "wasi")))]
 const DEFAULT_DEVICE_PROVIDER: &str = "cpal";
+// WaOS port: WaOS's audio graph.
+#[cfg(all(not(feature = "heap-profileable"), target_os = "wasi"))]
+const DEFAULT_DEVICE_PROVIDER: &str = "waos";
 #[cfg(feature = "heap-profileable")]
 const DEFAULT_DEVICE_PROVIDER: &str = "dummy";
 
@@ -123,25 +130,25 @@ impl DeviceController {
         match provider_name {
             "pulse" => {
                 warn!("pulseaudio supported by cpal");
-                warn!("Falling back to CPAL");
-                self.device_provider = Some(Box::new(CpalProvider::default()));
+                warn!("Falling back to the platform's output");
+                self.device_provider = Some(platform_provider());
             }
             "win_audiograph" => {
                 warn!("win_audiograph support was removed in 0.4");
                 warn!("cpal is now feature-complete on windows");
-                warn!("Falling back to CPAL");
-                self.device_provider = Some(Box::new(CpalProvider::default()));
+                warn!("Falling back to the platform's output");
+                self.device_provider = Some(platform_provider());
             }
-            "cpal" => {
-                self.device_provider = Some(Box::new(CpalProvider::default()));
+            "cpal" | "waos" => {
+                self.device_provider = Some(platform_provider());
             }
             "dummy" => {
                 self.device_provider = Some(Box::new(DummyDeviceProvider::new()));
             }
             _ => {
                 warn!("Unknown device provider: {}", provider_name);
-                warn!("Falling back to CPAL");
-                self.device_provider = Some(Box::new(CpalProvider::default()));
+                warn!("Falling back to the platform's output");
+                self.device_provider = Some(platform_provider());
             }
         }
 
@@ -527,4 +534,13 @@ mod tests {
         device.close_stream();
         assert!(device.idle_pause_at.is_none());
     }
+}
+
+/// The platform's own output: cpal's, or WaOS's audio graph in WaOS.
+fn platform_provider() -> Box<dyn crate::devices::traits::DeviceProvider> {
+    #[cfg(not(target_os = "wasi"))]
+    return Box::new(CpalProvider::default());
+    // WaOS port: WaOS's audio graph in place of cpal's hosts.
+    #[cfg(target_os = "wasi")]
+    return Box::new(WaosProvider);
 }

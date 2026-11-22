@@ -71,6 +71,12 @@ fn volume_key(path: &Utf8Path) -> Option<Utf8PathBuf> {
     Some(Utf8PathBuf::from(stripped.into_owned().to_lowercase()))
 }
 
+/// WaOS port: a program's files say no device, so every path is probed as one volume.
+#[cfg(target_os = "wasi")]
+fn volume_key(_path: &Utf8Path) -> Option<Utf8PathBuf> {
+    None
+}
+
 /// Unix volume key: device id of `path`'s filesystem. `None` if stat fails.
 #[cfg(unix)]
 fn volume_key(path: &Utf8Path) -> Option<Utf8PathBuf> {

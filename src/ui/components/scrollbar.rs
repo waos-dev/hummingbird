@@ -174,13 +174,6 @@ impl Styled for Scrollbar {
     }
 }
 
-impl IntoElement for Scrollbar {
-    type Element = Self;
-
-    fn into_element(self) -> Self::Element {
-        self
-    }
-}
 
 impl Element for Scrollbar {
     type RequestLayoutState = ();

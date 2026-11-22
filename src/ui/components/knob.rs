@@ -172,13 +172,6 @@ impl Styled for Knob {
     }
 }
 
-impl IntoElement for Knob {
-    type Element = Self;
-
-    fn into_element(self) -> Self::Element {
-        self
-    }
-}
 
 #[derive(Default)]
 struct KnobState {

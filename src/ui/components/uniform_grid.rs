@@ -144,13 +144,6 @@ impl UniformGrid {
     }
 }
 
-impl IntoElement for UniformGrid {
-    type Element = Self;
-
-    fn into_element(self) -> Self::Element {
-        self
-    }
-}
 
 impl InteractiveElement for UniformGrid {
     fn interactivity(&mut self) -> &mut Interactivity {

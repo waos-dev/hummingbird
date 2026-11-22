@@ -10,6 +10,7 @@ use std::{
 
 use cntp_i18n::{I18N_MANAGER, Locale, tr};
 use gpui::*;
+#[cfg(not(target_os = "wasi"))]
 use gpui_platform::current_platform;
 use prelude::FluentBuilder;
 use sqlx::SqlitePool;
@@ -333,7 +334,41 @@ fn ensure_main_window(
     Ok(window)
 }
 
+/// Runs the app until it quits: on the system's own platform, or as a WaOS program.
+#[cfg(not(target_os = "wasi"))]
 pub fn run() -> anyhow::Result<()> {
+    let (assets, launch) = prepare()?;
+    let application = Application::with_platform(current_platform(false)).with_assets(assets);
+    let toast_layer = launch.toast_layer.clone();
+    application.on_reopen(move |cx| {
+        if let Some(toast_layer) = toast_layer.get() {
+            let _ = ensure_main_window(cx, toast_layer.clone());
+        }
+    });
+    application.run(move |cx: &mut App| launch.launch(cx));
+    Ok(())
+}
+
+/// WaOS port: the app as a WaOS program, over GPUI's platform for wasdk.
+#[cfg(target_os = "wasi")]
+pub async fn run() -> anyhow::Result<()> {
+    let (assets, launch) = prepare()?;
+    wasdk_adapter_gpui::run_with(
+        |application| application.with_assets(assets),
+        move |cx: &mut App| launch.launch(cx),
+    )
+    .await;
+    Ok(())
+}
+
+/// What launching the app needs, made before GPUI starts.
+struct Launch {
+    toast_receiver: tokio::sync::mpsc::UnboundedReceiver<toasts::Toast>,
+    data_dir: std::path::PathBuf,
+    toast_layer: Rc<OnceCell<Entity<ToastLayer>>>,
+}
+
+fn prepare() -> anyhow::Result<(HummingbirdAssetSource, Launch)> {
     let toast_receiver = toasts::init();
     let data_dir = paths::data_dir();
     fs::create_dir_all(&data_dir).inspect_err(|error| {
@@ -355,16 +390,24 @@ pub fn run() -> anyhow::Result<()> {
         );
     }
 
-    let application =
-        Application::with_platform(current_platform(false)).with_assets(HummingbirdAssetSource);
     let toast_layer: Rc<OnceCell<Entity<ToastLayer>>> = Rc::new(OnceCell::new());
-    let toast_layer_for_reopen = toast_layer.clone();
-    application.on_reopen(move |cx| {
-        if let Some(toast_layer) = toast_layer_for_reopen.get() {
-            let _ = ensure_main_window(cx, toast_layer.clone());
-        }
-    });
-    application.run(move |cx: &mut App| {
+    Ok((
+        HummingbirdAssetSource,
+        Launch {
+            toast_receiver,
+            data_dir,
+            toast_layer,
+        },
+    ))
+}
+
+impl Launch {
+    fn launch(self, cx: &mut App) {
+        let Launch {
+            toast_receiver,
+            data_dir,
+            toast_layer,
+        } = self;
         // Fontconfig isn't read currently so fall back to the most "okay" font rendering
         // option - I'm sure people will disagree with this but Grayscale font rendering
         // results in text that is at least displayed correctly on all screens, unlike
@@ -586,7 +629,5 @@ pub fn run() -> anyhow::Result<()> {
             })
             .unwrap();
         register_pbc_event_handlers(cx);
-    });
-
-    Ok(())
+    }
 }

@@ -42,16 +42,6 @@ where
     }
 }
 
-impl<C> IntoElement for ColumnResizeHandle<C>
-where
-    C: Column + 'static,
-{
-    type Element = Self;
-
-    fn into_element(self) -> Self::Element {
-        self
-    }
-}
 
 impl<C> Element for ColumnResizeHandle<C>
 where

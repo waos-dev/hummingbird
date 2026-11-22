@@ -173,6 +173,13 @@ fn physical_device_id(mount_point: &Path) -> Option<String> {
 
         Some(windows_physical_drive_id(letter).unwrap_or_else(|| format!("drive_{letter}")))
     }
+
+    // WaOS port: a program sees no devices, so its folders are scanned as one disk.
+    #[cfg(target_os = "wasi")]
+    {
+        let _ = mount_point;
+        None
+    }
 }
 
 #[cfg(target_os = "linux")]

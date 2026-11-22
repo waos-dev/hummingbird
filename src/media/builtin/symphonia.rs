@@ -17,9 +17,11 @@ use symphonia::{
         AdpcmDecoder, AlacDecoder, FlacDecoder, MpaDecoder, PcmDecoder, VorbisDecoder,
     },
 };
+#[cfg(not(target_os = "wasi"))] // WaOS port: their C libraries are not built for WaOS yet.
 use symphonia_adapter_fdk_aac::AacDecoder;
 use tracing::error;
 
+#[cfg(not(target_os = "wasi"))] // WaOS port: their C libraries are not built for WaOS yet.
 use symphonia_adapter_libopus::OpusDecoder;
 
 use crate::{
@@ -518,7 +520,9 @@ impl MediaStream for SymphoniaStream {
             codecs.register_audio_decoder::<FlacDecoder>();
             codecs.register_audio_decoder::<VorbisDecoder>();
             codecs.register_audio_decoder::<AdpcmDecoder>();
+            #[cfg(not(target_os = "wasi"))]
             codecs.register_audio_decoder::<OpusDecoder>();
+            #[cfg(not(target_os = "wasi"))]
             codecs.register_audio_decoder::<AacDecoder>();
 
             codecs

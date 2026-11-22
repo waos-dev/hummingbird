@@ -53,13 +53,6 @@ impl Styled for Slider {
     }
 }
 
-impl IntoElement for Slider {
-    type Element = Self;
-
-    fn into_element(self) -> Self::Element {
-        self
-    }
-}
 
 impl Element for Slider {
     type RequestLayoutState = ();

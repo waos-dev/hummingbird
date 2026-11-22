@@ -67,14 +67,6 @@ impl<C: Column> CellStrip<C> {
     }
 }
 
-impl<C: Column> IntoElement for CellStrip<C> {
-    type Element = Self;
-
-    fn into_element(self) -> Self {
-        self
-    }
-}
-
 impl<C: Column> Element for CellStrip<C> {
     type RequestLayoutState = ();
     type PrepaintState = Vec<PaintedCell>;

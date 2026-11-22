@@ -29,6 +29,8 @@ use crate::services::mmb::listenbrainz::{
     self, ListenBrainz, ListenBrainzState, client::ListenBrainzClient,
     types::Session as ListenBrainzSession,
 };
+#[cfg(not(target_os = "wasi"))]
+use crate::services::mmb::discord::Discord;
 use crate::{
     library::{
         availability::AvailabilityState,
@@ -43,7 +45,7 @@ use crate::{
     },
     services::mmb::{
         MediaMetadataBroadcastService,
-        discord::{self, Discord, DiscordRpcStatus},
+        discord::{self, DiscordRpcStatus},
     },
     settings::{
         SettingsGlobal,
@@ -664,10 +666,16 @@ pub fn create_discord_mmbs(
     enabled: bool,
     status_tx: watch::Sender<DiscordRpcStatus>,
 ) {
-    let mmbs = Discord::new(enabled, status_tx);
-    mmbs_list.update(cx, |m, _| {
-        m.0.insert(discord::MMBS_KEY.to_string(), Arc::new(Mutex::new(mmbs)));
-    });
+    // WaOS port: a program reaches no Discord, so its presence stays disabled.
+    #[cfg(target_os = "wasi")]
+    let _ = (cx, mmbs_list, enabled, status_tx);
+    #[cfg(not(target_os = "wasi"))]
+    {
+        let mmbs = Discord::new(enabled, status_tx);
+        mmbs_list.update(cx, |m, _| {
+            m.0.insert(discord::MMBS_KEY.to_string(), Arc::new(Mutex::new(mmbs)));
+        });
+    }
 }
 
 pub(crate) const LIKED_SONGS_PLAYLIST_ID: i64 = 1;

@@ -87,13 +87,6 @@ impl ParentElement for Resizable {
     }
 }
 
-impl IntoElement for Resizable {
-    type Element = Self;
-
-    fn into_element(self) -> Self::Element {
-        self
-    }
-}
 
 struct ResizeState {
     is_dragging: bool,

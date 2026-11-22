@@ -1,18 +1,24 @@
+#[cfg(not(target_os = "wasi"))] // WaOS port: no Discord IPC socket for a program.
 use std::{
     path::PathBuf,
     sync::Arc,
     time::{Duration, Instant, SystemTime, UNIX_EPOCH},
 };
 
+#[cfg(not(target_os = "wasi"))]
 use async_trait::async_trait;
+#[cfg(not(target_os = "wasi"))]
 use discord_rich_presence::{
     DiscordIpc, DiscordIpcClient,
     activity::{Activity, Assets, StatusDisplayType, Timestamps},
 };
 use gpui::SharedString;
+#[cfg(not(target_os = "wasi"))]
 use tokio::sync::watch;
+#[cfg(not(target_os = "wasi"))]
 use tracing::{debug, warn};
 
+#[cfg(not(target_os = "wasi"))]
 use crate::{
     media::metadata::Metadata, playback::thread::PlaybackState,
     services::mmb::MediaMetadataBroadcastService,
@@ -20,7 +26,9 @@ use crate::{
 
 pub const MMBS_KEY: &str = "discord";
 
+#[cfg(not(target_os = "wasi"))]
 const DISCORD_CLIENT_ID: &str = "1486108276218400818";
+#[cfg(not(target_os = "wasi"))]
 const RECONNECT_COOLDOWN: Duration = Duration::from_secs(10);
 
 #[derive(Clone, Debug, Default, PartialEq)]
@@ -33,6 +41,7 @@ pub enum DiscordRpcStatus {
     Connected,
 }
 
+#[cfg(not(target_os = "wasi"))]
 pub struct Discord {
     metadata: Option<Arc<Metadata>>,
     last_path: Option<PathBuf>,
@@ -51,6 +60,7 @@ pub struct Discord {
     client: DiscordIpcClient,
 }
 
+#[cfg(not(target_os = "wasi"))]
 impl Discord {
     pub fn new(enabled: bool, status_tx: watch::Sender<DiscordRpcStatus>) -> Self {
         let client = DiscordIpcClient::new(DISCORD_CLIENT_ID);
@@ -297,6 +307,7 @@ impl Discord {
     }
 }
 
+#[cfg(not(target_os = "wasi"))]
 #[async_trait]
 impl MediaMetadataBroadcastService for Discord {
     async fn new_track(&mut self, file_path: PathBuf) {

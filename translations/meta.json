@@ -847,13 +847,13 @@
   },
   "LEGACY_THEME_GUIDE_ACTION": {
     "context": "app.rs",
-    "definedIn": "src/ui/app.rs:541",
+    "definedIn": "src/ui/app.rs:584",
     "plural": false,
     "description": null
   },
   "LEGACY_THEME_REMOVAL_WARNING": {
     "context": "app.rs",
-    "definedIn": "src/ui/app.rs:537",
+    "definedIn": "src/ui/app.rs:580",
     "plural": false,
     "description": null
   },
