@@ -5,8 +5,7 @@ use std::{
 
 use gpui::{
     App, Bounds, Context, Corners, Element, ElementId, GlobalElementId, InspectorElementId,
-    IntoElement, LayoutId, ObjectFit, Pixels, Refineable, RenderImage, Style, StyleRefinement,
-    Styled, Window,
+    LayoutId, ObjectFit, Pixels, Refineable, RenderImage, Style, StyleRefinement, Styled, Window,
 };
 use image::{Frame, imageops};
 use smallvec::SmallVec;
@@ -294,7 +293,6 @@ impl Styled for ManagedImage {
         &mut self.style
     }
 }
-
 
 impl Element for ManagedImage {
     type RequestLayoutState = ImageReady;

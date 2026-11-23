@@ -20,6 +20,8 @@ use tracing::{debug, warn};
 
 #[cfg(any(feature = "libre-services", feature = "proprietary-services"))]
 use crate::paths;
+#[cfg(not(target_os = "wasi"))]
+use crate::services::mmb::discord::Discord;
 #[cfg(feature = "proprietary-services")]
 use crate::services::mmb::lastfm::{
     self, LASTFM_CREDS, LastFM, LastFMState, client::LastFMClient, types::Session,
@@ -29,8 +31,6 @@ use crate::services::mmb::listenbrainz::{
     self, ListenBrainz, ListenBrainzState, client::ListenBrainzClient,
     types::Session as ListenBrainzSession,
 };
-#[cfg(not(target_os = "wasi"))]
-use crate::services::mmb::discord::Discord;
 use crate::{
     library::{
         availability::AvailabilityState,

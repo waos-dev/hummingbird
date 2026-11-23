@@ -53,7 +53,6 @@ impl Styled for Slider {
     }
 }
 
-
 impl Element for Slider {
     type RequestLayoutState = ();
 

@@ -1,6 +1,6 @@
+use std::path::PathBuf;
 #[cfg(not(target_os = "wasi"))]
 use std::{ffi::OsStr, sync::OnceLock};
-use std::path::PathBuf;
 
 #[cfg(not(target_os = "wasi"))]
 use directories::ProjectDirs;

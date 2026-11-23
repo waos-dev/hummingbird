@@ -8910,8 +8910,8 @@ dependencies = [
 
 [[package]]
 name = "wasdk"
-version = "0.6.0"
-source = "git+https://github.com/waos-dev/waos?rev=c3dcb26065fe77d455b6cc2ce052f55216810a72#c3dcb26065fe77d455b6cc2ce052f55216810a72"
+version = "0.7.0"
+source = "git+https://github.com/waos-dev/waos?tag=v0.7.0#54b3a76623e2a317d19d2c52a95ffec534a8897c"
 dependencies = [
  "inventory",
  "wasdk-macros",
@@ -8920,8 +8920,8 @@ dependencies = [
 
 [[package]]
 name = "wasdk-adapter-gpui"
-version = "0.6.0"
-source = "git+https://github.com/waos-dev/waos?rev=c3dcb26065fe77d455b6cc2ce052f55216810a72#c3dcb26065fe77d455b6cc2ce052f55216810a72"
+version = "0.7.0"
+source = "git+https://github.com/waos-dev/waos?tag=v0.7.0#54b3a76623e2a317d19d2c52a95ffec534a8897c"
 dependencies = [
  "anyhow",
  "env_filter",
@@ -8937,8 +8937,8 @@ dependencies = [
 
 [[package]]
 name = "wasdk-macros"
-version = "0.6.0"
-source = "git+https://github.com/waos-dev/waos?rev=c3dcb26065fe77d455b6cc2ce052f55216810a72#c3dcb26065fe77d455b6cc2ce052f55216810a72"
+version = "0.7.0"
+source = "git+https://github.com/waos-dev/waos?tag=v0.7.0#54b3a76623e2a317d19d2c52a95ffec534a8897c"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -8947,8 +8947,8 @@ dependencies = [
 
 [[package]]
 name = "wasdk-wgpu"
-version = "0.6.0"
-source = "git+https://github.com/waos-dev/waos?rev=c3dcb26065fe77d455b6cc2ce052f55216810a72#c3dcb26065fe77d455b6cc2ce052f55216810a72"
+version = "0.7.0"
+source = "git+https://github.com/waos-dev/waos?tag=v0.7.0#54b3a76623e2a317d19d2c52a95ffec534a8897c"
 dependencies = [
  "futures",
  "js-sys",

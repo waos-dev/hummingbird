@@ -172,7 +172,6 @@ impl Styled for Knob {
     }
 }
 
-
 #[derive(Default)]
 struct KnobState {
     drag: Option<(Pixels, f32, bool)>,

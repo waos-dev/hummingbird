@@ -10,8 +10,8 @@ use std::{
 use globwalk::GlobWalkerBuilder;
 use gpui::{
     AnyElement, App, Bounds, Div, Element, ElementId, Entity, GlobalElementId, Hsla,
-    InspectorElementId, IntoElement, LayoutId, ParentElement, Pixels, Render, RenderImage,
-    Stateful, StyleRefinement, Styled, Window, div,
+    InspectorElementId, LayoutId, ParentElement, Pixels, Render, RenderImage, Stateful,
+    StyleRefinement, Styled, Window, div,
 };
 use rustc_hash::{FxHashMap, FxHashSet};
 use tracing::debug;
@@ -239,7 +239,6 @@ where
         }
     }
 }
-
 
 impl<T> ParentElement for MaybeStateful<T>
 where

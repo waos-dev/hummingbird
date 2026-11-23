@@ -670,7 +670,6 @@ struct PrepaintState {
     selection: Option<PaintQuad>,
 }
 
-
 impl Element for TextElement {
     type RequestLayoutState = ();
     type PrepaintState = PrepaintState;

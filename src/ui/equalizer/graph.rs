@@ -321,7 +321,6 @@ impl Styled for EqGraph {
     }
 }
 
-
 pub struct EqGraphPrepaint {
     hitbox: Hitbox,
     plot: Bounds<Pixels>,

@@ -42,7 +42,6 @@ where
     }
 }
 
-
 impl<C> Element for ColumnResizeHandle<C>
 where
     C: Column + 'static,

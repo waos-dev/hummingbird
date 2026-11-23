@@ -87,7 +87,6 @@ impl ParentElement for Resizable {
     }
 }
 
-
 struct ResizeState {
     is_dragging: bool,
     start_position: Pixels,

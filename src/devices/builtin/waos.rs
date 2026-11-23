@@ -4,7 +4,8 @@
 //! writer thread of its own that drains it into a `stream-input` node of an audio context, which
 //! plays what is written ahead of the graph and silence while nothing waits. The node's `write`
 //! waits while a latency's worth is ahead of what plays, so the writer paces itself, and the ring
-//! fills up behind it, which the playback thread sees as a full device.
+//! fills up behind it, which the playback thread sees as a full device. While the stream is
+//! paused its context is suspended, so a paused program makes no sound and WaOS may freeze it.
 //!
 //! The invariant: only the writer thread touches the context and its node, from its start to
 //! its end; the playback thread talks to it through `Shared` and the ring.
@@ -58,7 +59,9 @@ impl DeviceProvider for WaosProvider {
     }
 
     fn get_devices(&mut self) -> Result<Vec<Box<dyn Device>>, ListError> {
-        Ok(vec![Box::new(WaosDevice::new().map_err(ListError::Unknown)?)])
+        Ok(vec![Box::new(
+            WaosDevice::new().map_err(ListError::Unknown)?,
+        )])
     }
 
     fn get_default_device(&mut self) -> Result<Box<dyn Device>, FindError> {
@@ -167,8 +170,7 @@ struct WaosStream {
 
 impl WaosStream {
     fn open(sample_rate: u32) -> Result<Self, OpenError> {
-        let ring_samples =
-            (RING_SECONDS * f64::from(sample_rate)) as usize * usize::from(CHANNELS);
+        let ring_samples = (RING_SECONDS * f64::from(sample_rate)) as usize * usize::from(CHANNELS);
         let (ring, drained) = RingBuffer::new(ring_samples);
         let shared = Arc::new(Shared {
             gain: AtomicU64::new(1.0f64.to_bits()),
@@ -333,13 +335,20 @@ fn write_until_closed(mut drained: Consumer<f32>, shared: &Shared) {
     let base = context.base();
     input.node().connect(&base.destination().node());
     let mut block = Vec::with_capacity(WRITE_FRAMES * usize::from(CHANNELS));
+    // A context plays from when it is made; the stream opens paused.
+    let mut suspended = false;
     while !shared.closing.load(Ordering::Relaxed) {
-        if shared.paused.load(Ordering::Relaxed) || drained.slots() == 0 {
+        let paused = shared.paused.load(Ordering::Relaxed);
+        if paused != suspended {
+            follow_pause(&context, paused);
+            suspended = paused;
+        }
+        let samples =
+            drained.slots().min(block.capacity()) / usize::from(CHANNELS) * usize::from(CHANNELS);
+        if paused || samples == 0 {
             thread::sleep(IDLE_WAIT);
             continue;
         }
-        let samples = drained.slots().min(block.capacity()) / usize::from(CHANNELS)
-            * usize::from(CHANNELS);
         let gain = shared.gain();
         let chunk = drained
             .read_chunk(samples)
@@ -353,4 +362,20 @@ fn write_until_closed(mut drained: Consumer<f32>, shared: &Shared) {
         }
     }
     wasdk::block_on(context.close());
+}
+
+/// Suspends the context while the stream is paused, so its output stops and WaOS sees the
+/// program make no sound (and may freeze it out of sight), and resumes it to play again.
+fn follow_pause(context: &AudioContext, paused: bool) {
+    let changed = if paused {
+        wasdk::block_on(context.suspend())
+    } else {
+        wasdk::block_on(context.resume())
+    };
+    if let Err(error) = changed {
+        warn!(
+            "WaOS's sound did not {}: {error:?}",
+            if paused { "suspend" } else { "resume" }
+        );
+    }
 }

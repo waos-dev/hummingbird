@@ -1,8 +1,7 @@
 use gpui::{
     AnyElement, App, AvailableSpace, Bounds, ContentMask, Element, ElementId, GlobalElementId,
-    Hitbox, InspectorElementId, InteractiveElement, Interactivity, IntoElement, LayoutId, Overflow,
-    Pixels, Point, StatefulInteractiveElement, UniformListScrollHandle, Window, point, px,
-    relative, size,
+    Hitbox, InspectorElementId, InteractiveElement, Interactivity, LayoutId, Overflow, Pixels,
+    Point, StatefulInteractiveElement, UniformListScrollHandle, Window, point, px, relative, size,
 };
 use smallvec::SmallVec;
 use std::{cmp, ops::Range, rc::Rc};
@@ -143,7 +142,6 @@ impl UniformGrid {
         )
     }
 }
-
 
 impl InteractiveElement for UniformGrid {
     fn interactivity(&mut self) -> &mut Interactivity {

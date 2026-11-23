@@ -174,7 +174,6 @@ impl Styled for Scrollbar {
     }
 }
 
-
 impl Element for Scrollbar {
     type RequestLayoutState = ();
     type PrepaintState = Hitbox;

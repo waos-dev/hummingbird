@@ -86,7 +86,6 @@ async fn main() {
 
 /// What the app needs before its UI: translations, logging and the media providers.
 fn set_up() -> anyhow::Result<()> {
-
     // disable the GPUI mini profiler immediately to avoid unnecessary allocations
     set_trace_enabled(false);
 

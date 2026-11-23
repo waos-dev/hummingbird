@@ -94,8 +94,8 @@ gpui_platform = { git = "https://github.com/waos-dev/zed", rev = "ab35bace16f23d
 
 # WaOS port: the SDK a WaOS program is written with, and GPUI's platform over it.
 [target.'cfg(target_os = "wasi")'.dependencies]
-wasdk = { git = "https://github.com/waos-dev/waos", rev = "c3dcb26065fe77d455b6cc2ce052f55216810a72" }
-wasdk-adapter-gpui = { git = "https://github.com/waos-dev/waos", rev = "c3dcb26065fe77d455b6cc2ce052f55216810a72" }
+wasdk = { git = "https://github.com/waos-dev/waos", tag = "v0.7.0" }
+wasdk-adapter-gpui = { git = "https://github.com/waos-dev/waos", tag = "v0.7.0" }
 
 [build-dependencies]
 anyhow = "1"
@@ -187,3 +187,5 @@ getrandom = { path = "waos/patched/getrandom-0.3" }
 [package.metadata.waos]
 id = "dev.waos.hummingbird"
 name = "Hummingbird"
+# Hummingbird's macOS icon, square and filling its canvas, as WaOS draws icons (waos/icon.svg).
+icon = "waos/icon.png"
