@@ -72,8 +72,14 @@ impl LibrarySettings {
         let settings = self.settings.clone();
 
         cx.spawn(async move |cx| {
-            let Ok(Ok(Some(paths))) = path_future.await else {
-                return;
+            let paths = match path_future.await {
+                Ok(Ok(Some(paths))) => paths,
+                Ok(Ok(None)) => return,
+                Ok(Err(error)) => {
+                    warn!("The folder picker failed: {error:#}");
+                    return;
+                }
+                Err(_) => return,
             };
 
             let paths = paths

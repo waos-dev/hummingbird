@@ -32,6 +32,10 @@ impl RenderOnce for WindowChrome {
     fn render(self, window: &mut Window, cx: &mut App) -> impl IntoElement {
         let theme = cx.global::<Theme>();
         let decorations = window.window_decorations();
+        // What the system covers (a phone's status and navigation bars, a cutout, the keyboard),
+        // which GPUI leaves to the app to keep its content out of; none on a desktop.
+        let insets = window.insets().effective();
+        let padding = px(6.0);
         let rounding = APP_ROUNDING;
         let shadow_size = APP_SHADOW_SIZE;
         let border_size = px(1.0);
@@ -155,7 +159,10 @@ impl RenderOnce for WindowChrome {
                     .flex_col()
                     .max_w_full()
                     .max_h_full()
-                    .p(px(6.0))
+                    .pt(padding + insets.top)
+                    .pr(padding + insets.right)
+                    .pb(padding + insets.bottom)
+                    .pl(padding + insets.left)
                     .child(self.content),
             );
 
