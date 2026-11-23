@@ -10,6 +10,8 @@ What is on top of upstream Hummingbird:
 - `waos/patched/`: third-party crates changed for WaOS, `[patch]`ed in `Cargo.toml` (`waos/patched/README.md` says what each is and what changed).
 - `waos/env.sh`: the environment a WaOS build needs, from a wasi-sdk.
 - `rust-toolchain.toml`: WaOS's nightly, with `wasm32-wasip3`.
+- `.github/workflows/waos-release.yml`: the release; upstream's workflows run on `master` alone, so none runs on this branch or its tags.
+- `waos/icon.svg`, `waos/icon.png`: Hummingbird's macOS icon, square and filling its canvas, as WaOS draws icons.
 
 The program's `std::thread`s are WaOS's cooperative threads, which take turns on one core: the playback thread, tokio's workers and sqlx's SQLite worker run as written.
 
@@ -19,7 +21,7 @@ Needed:
 
 - Rust through rustup: `rustup toolchain install` in the checkout installs `rust-toolchain.toml`'s.
 - [wasi-sdk 34](https://github.com/WebAssembly/wasi-sdk/releases/tag/wasi-sdk-34) or newer, unpacked anywhere: its cooperative-threads libc, which gives the program its threads, and its C compiler, for SQLite.
-- `waos`, of a WaOS whose engine runs a program's threads (WaOS's `main` since 2026-11-22).
+- `waos`, and a WaOS to run it in, of 0.7.0 or newer: the first whose engine runs a program's threads.
 
 Then, in each shell, with `WASI_SDK` the wasi-sdk's folder (`wasi-sdk-34.0-arm64-macos`, `wasi-sdk-34.0-x86_64-linux`, …):
 
@@ -30,6 +32,13 @@ waos package --no-default-features          # target/waos/dev.waos.hummingbird-<
 ```
 
 `--no-default-features` leaves out the online services (Last.fm, ListenBrainz), whose reqwest has no WASI backend. A native build of this branch, on the fork's GPUI, is not checked yet.
+
+## Releasing
+
+1. Set the version in `Cargo.toml` and commit it on `waos`.
+2. Push a tag `waos-v<that version>`, e.g. `git tag waos-v0.4.0 && git push origin waos-v0.4.0`.
+
+`waos-release.yml` checks the tag against the version, builds and packages the program on Linux, signed with the WaOS project's key (the repository's secret `WAOS_SIGNING_KEY`), and attaches the `.wapk` and its `index.json` to the tag's GitHub release, marked latest. WaOS reads a repository's latest release, so `github.com/waos-dev/hummingbird` added as a source in WaOS installs and updates Hummingbird; the official source, `waos-dev/apps`, lists it from there. A failed release is run again from its run's page.
 
 ## Keeping up with upstream Hummingbird
 
