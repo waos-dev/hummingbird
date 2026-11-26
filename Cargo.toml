@@ -94,8 +94,8 @@ gpui_platform = { git = "https://github.com/waos-dev/zed", rev = "ab35bace16f23d
 
 # WaOS port: the SDK a WaOS program is written with, and GPUI's platform over it.
 [target.'cfg(target_os = "wasi")'.dependencies]
-wasdk = { git = "https://github.com/waos-dev/waos", tag = "v0.7.0" }
-wasdk-adapter-gpui = { git = "https://github.com/waos-dev/waos", tag = "v0.7.0" }
+wasdk = { git = "https://github.com/waos-dev/waos", tag = "v0.8.0" }
+wasdk-adapter-gpui = { git = "https://github.com/waos-dev/waos", tag = "v0.8.0" }
 
 [build-dependencies]
 anyhow = "1"

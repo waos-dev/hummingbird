@@ -21,7 +21,7 @@ Needed:
 
 - Rust through rustup: `rustup toolchain install` in the checkout installs `rust-toolchain.toml`'s.
 - [wasi-sdk 34](https://github.com/WebAssembly/wasi-sdk/releases/tag/wasi-sdk-34) or newer, unpacked anywhere: its cooperative-threads libc, which gives the program its threads, and its C compiler, for SQLite.
-- `waos`, and a WaOS to run it in, of 0.7.0 or newer: the first whose engine runs a program's threads.
+- `waos`, and a WaOS to run it in, of 0.8.0 or newer: the release whose SDK it builds with, the first to serve its GPU interface, `wasdk:gpu`.
 
 Then, in each shell, with `WASI_SDK` the wasi-sdk's folder (`wasi-sdk-34.0-arm64-macos`, `wasi-sdk-34.0-x86_64-linux`, …):
 
