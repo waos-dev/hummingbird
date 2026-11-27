@@ -3387,7 +3387,7 @@ checksum = "15cdd26707701c53297e2fa6afb323d55fbc1d0810c3aec078ae3ef0424c3c15"
 
 [[package]]
 name = "hummingbird"
-version = "0.4.1"
+version = "0.4.2"
 dependencies = [
  "anyhow",
  "async-compression",
@@ -8910,18 +8910,19 @@ dependencies = [
 
 [[package]]
 name = "wasdk"
-version = "0.7.0"
-source = "git+https://github.com/waos-dev/waos?tag=v0.7.0#54b3a76623e2a317d19d2c52a95ffec534a8897c"
+version = "0.8.1"
+source = "git+https://github.com/waos-dev/waos?tag=v0.8.1#7f4ddb9d2857f0a112a9e3f617c10be7facfaeb2"
 dependencies = [
  "inventory",
+ "raw-window-handle",
  "wasdk-macros",
  "wit-bindgen 0.63.0",
 ]
 
 [[package]]
 name = "wasdk-adapter-gpui"
-version = "0.7.0"
-source = "git+https://github.com/waos-dev/waos?tag=v0.7.0#54b3a76623e2a317d19d2c52a95ffec534a8897c"
+version = "0.8.1"
+source = "git+https://github.com/waos-dev/waos?tag=v0.8.1#7f4ddb9d2857f0a112a9e3f617c10be7facfaeb2"
 dependencies = [
  "anyhow",
  "env_filter",
@@ -8937,8 +8938,8 @@ dependencies = [
 
 [[package]]
 name = "wasdk-macros"
-version = "0.7.0"
-source = "git+https://github.com/waos-dev/waos?tag=v0.7.0#54b3a76623e2a317d19d2c52a95ffec534a8897c"
+version = "0.8.1"
+source = "git+https://github.com/waos-dev/waos?tag=v0.8.1#7f4ddb9d2857f0a112a9e3f617c10be7facfaeb2"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -8947,10 +8948,9 @@ dependencies = [
 
 [[package]]
 name = "wasdk-wgpu"
-version = "0.7.0"
-source = "git+https://github.com/waos-dev/waos?tag=v0.7.0#54b3a76623e2a317d19d2c52a95ffec534a8897c"
+version = "0.8.1"
+source = "git+https://github.com/waos-dev/waos?tag=v0.8.1#7f4ddb9d2857f0a112a9e3f617c10be7facfaeb2"
 dependencies = [
- "futures",
  "js-sys",
  "wasdk",
  "wgpu",
